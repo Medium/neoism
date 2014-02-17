@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"time"
 )
 
 // A Database is a REST client connected to a Neo4j database.
@@ -31,11 +32,22 @@ type Database struct {
 
 // Connect establishes a connection to the Neo4j server.
 func Connect(uri string) (*Database, error) {
+	db, err := ConnectWithTimeouts(uri, 0, 0)
+	if err != nil {
+		return nil, err
+	}
+	return db, nil
+}
+
+// Connect establishes a connection to the Neo4j server.
+func ConnectWithTimeouts(uri string, httpConnectTimeout time.Duration, httpReadTimeout time.Duration) (*Database, error) {
 	h := http.Header{}
 	h.Add("User-Agent", "neoism")
 	db := &Database{
 		Session: &napping.Session{
-			Header: &h,
+			Header:             &h,
+			HttpConnectTimeout: httpConnectTimeout,
+			HttpReadTimeout:    httpReadTimeout,
 		},
 	}
 	_, err := url.Parse(uri) // Sanity check
