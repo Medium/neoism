@@ -5,7 +5,7 @@
 package neoism
 
 import (
-	"github.com/jmcvetta/napping"
+	"github.com/Medium/napping"
 	"log"
 	"net/http"
 	"net/url"
